@@ -13,7 +13,8 @@ import { ServiceLocator } from "../services/locator.service";
 import { IErrorHistory } from "../models/error-history.model";
 import { Environment, IEnvironment } from "../models/environment.model";
 import { ToastType } from "../modules/toast-notification";
-import { ErrorHandling } from "./error-handeling";
+import { ErrorHandling } from "./error-handling";
+import { UserService } from "@core/services/user.service";
 
 export function Api(
   verb: HttpVerb = "GET",
@@ -56,6 +57,7 @@ export class RequestBuilder
   private _bearer: string;
   private readonly _environment: IEnvironment;
   private readonly _clientService: ClientService;
+  private readonly _userService: UserService;
 
   constructor(private verb: HttpVerb = "GET", public global: boolean = false)
   {
@@ -324,7 +326,7 @@ export class RequestBuilder
       this.getUrl() +
       (hasParam
         ? "?" +
-        this._urlParameters.urlParamaters(
+        this._urlParameters.urlParameters(
           this._ignoreNullParam,
           this._encodeQueryParam
         )
@@ -335,12 +337,12 @@ export class RequestBuilder
     /* Note in post FormData (ex: Uploading File) header should not be sent */
     if (this._formData == null)
     {
-      if (this._clientService.currentUser !== null)
+      if (this._userService.currentUser !== null)
       {
         headerItems = {
           ...headerItems,
           ...{
-            Authorization: `${this._bearer} ${this._clientService.currentUser?.Token}`,
+            Authorization: `${this._bearer} ${this._userService.currentUser?.Token}`,
           },
         };
       }
@@ -354,14 +356,14 @@ export class RequestBuilder
     } else if (this._formData !== null)
     {
       headerItems = null; /* Must null in Form Data */
-      if (this._clientService.currentUser !== null)
+      if (this._userService.currentUser !== null)
       {
         headerItems = {
-          Authorization: `${this._bearer} ${this._clientService.currentUser?.Token}`,
+          Authorization: `${this._bearer} ${this._userService.currentUser?.Token}`,
         };
         paramItems.append(
           "Authorization",
-          `${this._bearer} ${this._clientService.currentUser?.Token}`
+          `${this._bearer} ${this._userService.currentUser?.Token}`
         );
       }
     }
@@ -471,7 +473,7 @@ export class RequestBuilder
     }
     const { type, caption, text } = ErrorHandling(error);
     this.openToast(type, caption, text);
-    return ErrorHandling(error);
+    throw text;
   }
 
   private openToast(type: ToastType, caption: string, text: string): void
