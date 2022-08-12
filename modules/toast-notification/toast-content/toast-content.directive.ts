@@ -19,14 +19,13 @@ export class ToastContentDirective implements OnInit, OnDestroy {
   private _componentRef: ComponentRef<any> | null = null;
 
   constructor(
-      private _viewContainerRef: ViewContainerRef,
-      private _componentFactoryResolver: ComponentFactoryResolver,
+      private _viewContainerRef: ViewContainerRef
   ) {
   }
 
   ngOnInit(): void {
-    const componentFactory = this._componentFactoryResolver.resolveComponentFactory(this.toast.component as Type<any>);
-    this._componentRef = this._viewContainerRef.createComponent(componentFactory);
+    /* Deprecated in angular 13 */ //const componentFactory = this._componentFactoryResolver.resolveComponentFactory(this.toast.component as Type<any>);
+    this._componentRef = this._viewContainerRef.createComponent(this.toast.component as Type<any>);
     this._componentRef.instance.toast = this.toast;
   }
 

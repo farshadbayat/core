@@ -1,5 +1,9 @@
 <div class="close-button" (click)="toast?.close()">&times;</div>
 <div class="content-body">
-  <div *ngIf="toast?.caption" class="title">{{toast?.caption}}</div>
-  <div>{{toast?.text}}</div>
+  <ng-template *ngIf="textList.length > 0" [ngIfElse]="textArray">
+    <div class="title">{{toast?.caption}}</div>
+  </ng-template>
+  <ng-template #textArray>
+    <div *ngFor="let msg of textList;">{{toast?.text}}</div>
+  </ng-template>
 </div>
