@@ -7,7 +7,7 @@ export class Toast {
 
   readonly autoClose: boolean | undefined;
   readonly duration: number | undefined;
-  readonly text: string | undefined;
+  readonly text: string | string[] | undefined;
   readonly caption: string | undefined;
   readonly type: ToastType;
   readonly component: Type<any> | undefined;

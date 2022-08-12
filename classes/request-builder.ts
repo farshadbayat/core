@@ -444,24 +444,24 @@ export class RequestBuilder
     {
       this._clientService.finishLoading();
     }
-    if (resp.message)
+    if (resp.Messages)
     {
-      this.openToast(resp.success ? "success" : "danger", "", resp.message);
+      this.openToast(resp.Success? "success" : "danger", "", resp.Messages);
     }
   }
 
   private handlePipeMap(resp: IResponse<any>): IResponse<any>
   {
-    if (resp?.success === false)
+    if (resp?.Success === false)
     {
-      throw { message: resp.message, status: 0 };
+      throw { message: resp.Messages, status: 0 };
     } else
     {
       return resp;
     }
   }
 
-  private errorHandling(error: HttpErrorResponse)
+  private errorHandling(error: HttpErrorResponse): Observable<any>
   {
     if (this._environment.debug === true)
     {
@@ -473,10 +473,10 @@ export class RequestBuilder
     }
     const { type, caption, text } = ErrorHandling(error);
     this.openToast(type, caption, text);
-    throw text;
+    return of(error);
   }
 
-  private openToast(type: ToastType, caption: string, text: string): void
+  private openToast(type: ToastType, caption: string, text: string | string[]): void
   {
     if (this._showMessage !== false && this._environment.debug === true)
     {

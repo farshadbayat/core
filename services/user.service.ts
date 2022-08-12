@@ -4,7 +4,7 @@ import { Environment } from '../models/environment.model';
 import { HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { ClientService } from './client.service';
+import { RepositoryService } from './repository.service';
 
 @Injectable()
 export class UserService
@@ -33,15 +33,15 @@ export class UserService
     const userLoginData: string = localStorage.getItem("user") || "";
     if (userLoginData.length > 0)
     {
-      this._clientService.setData('userLogin', JSON.parse(userLoginData));
-      return this._clientService.getData('userLogin');
+      this._repositoryService.setData('userLogin', JSON.parse(userLoginData));
+      return this._repositoryService.getData('userLogin');
     } else
     {
       return null;
     }
   }
 
-  constructor(private readonly _clientService: ClientService,
+  constructor(private readonly _repositoryService: RepositoryService,
     private readonly _environment: Environment,
     private readonly _router: Router)
   {
@@ -50,18 +50,18 @@ export class UserService
 
   public saveUserLogin(loginUser: UserLogin): void
   {
-    this._clientService.setData('userLogin', loginUser);
+    this._repositoryService.setData('userLogin', loginUser);
     localStorage.setItem('User', JSON.stringify(loginUser));
-    this.login$.next(this._clientService.getData('userLogin'));
+    this.login$.next(this._repositoryService.getData('userLogin'));
   }
 
   public refreshToken(): void { }
 
   public userLogout(redirect: boolean = true, returnUrl: string = ""): void
   {
-    this._clientService.setData('userLogin', null);
+    this._repositoryService.setData('userLogin', null);
     localStorage.clear();
-    this.login$.next(this._clientService.getData('userLogin'));
+    this.login$.next(this._repositoryService.getData('userLogin'));
     if (redirect === true)
     {
       const url = this._environment?.loginRoute as string;
