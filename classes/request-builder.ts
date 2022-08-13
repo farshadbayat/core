@@ -6,7 +6,7 @@ import
 } from "@angular/common/http";
 import { map, catchError, tap } from "rxjs/operators";
 import { ClientService } from "../services/client.service";
-import { Observable, of, throwError } from "rxjs";
+import { Observable, of } from "rxjs";
 import { IResponse } from "../models/response.model";
 import { ParamsHandler } from "../classes/params-handler";
 import { ServiceLocator } from "../services/locator.service";
@@ -57,7 +57,6 @@ export class RequestBuilder
   private _bearer: string;
   private readonly _environment: IEnvironment;
   private readonly _clientService: ClientService;
-  private readonly _userService: UserService;
 
   constructor(private verb: HttpVerb = "GET", public global: boolean = false)
   {
@@ -337,12 +336,12 @@ export class RequestBuilder
     /* Note in post FormData (ex: Uploading File) header should not be sent */
     if (this._formData == null)
     {
-      if (this._userService.currentUser !== null)
+      if (this._clientService.currentUser !== null)
       {
         headerItems = {
           ...headerItems,
           ...{
-            Authorization: `${this._bearer} ${this._userService.currentUser?.Token}`,
+            Authorization: `${this._bearer} ${this._clientService.currentUser?.Token}`,
           },
         };
       }
@@ -356,14 +355,14 @@ export class RequestBuilder
     } else if (this._formData !== null)
     {
       headerItems = null; /* Must null in Form Data */
-      if (this._userService.currentUser !== null)
+      if (this._clientService.currentUser !== null)
       {
         headerItems = {
-          Authorization: `${this._bearer} ${this._userService.currentUser?.Token}`,
+          Authorization: `${this._bearer} ${this._clientService.currentUser?.Token}`,
         };
         paramItems.append(
           "Authorization",
-          `${this._bearer} ${this._userService.currentUser?.Token}`
+          `${this._bearer} ${this._clientService.currentUser?.Token}`
         );
       }
     }
@@ -446,7 +445,7 @@ export class RequestBuilder
     }
     if (resp.Messages)
     {
-      this.openToast(resp.Success? "success" : "danger", "", resp.Messages);
+      this.openToast(resp.Success ? "success" : "danger", "", resp.Messages);
     }
   }
 

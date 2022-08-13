@@ -7,7 +7,6 @@ import { AuthGuard } from '@core/services/auth.guard';
 import { Environment, IEnvironment } from './models';
 import { ToastNotificationsModule } from './modules';
 
-
 @NgModule({
   imports: [
     BrowserModule,
