@@ -15,7 +15,6 @@ import
     HttpResponse,
   } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { ClientService } from './client.service';
 import { UserService } from './user.service';
 @Injectable({
   providedIn: 'root',
